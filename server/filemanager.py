@@ -149,5 +149,22 @@ def listFiles(pathName, bucketName):
             files.append(fileName[fileName.rfind('/') + 1:])
     return files
 
+def downloadFile(pathName, bucketName, fileName):
+    try: 
+        if not fileExists(pathName, bucketName, fileName):
+            raise Exception("File don't exists")
+        file = open(fileData + "/" + pathName + "/" + bucketName + "/" + fileName, "r")
+        data = file.read()
+        return data
+    except Exception as e:
+        raise e
 
-
+def deleteFile(pathName, bucketName, fileName):
+    try: 
+        if not fileExists(pathName, bucketName, fileName):
+            raise Exception("File don't exists")
+        p = pathlib.Path(fileData + "/" + pathName + "/" + bucketName + "/" + fileName)
+        p.unlink()
+        return
+    except Exception as e:
+        raise e

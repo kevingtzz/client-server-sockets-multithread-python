@@ -114,7 +114,19 @@ class Message:
             elif action == "fileExists":
                     result = filemanager.fileExists(pathName, bucketName, fileName)
                     content["message"] = "Success"
-                    content["result"] = result           
+                    content["result"] = result
+            elif action == "listFiles":
+                    files = filemanager.listFiles(pathName, bucketName)
+                    content["message"] = "Success"
+                    content["fileList"] = str(files)
+            elif action == "downloadFile":
+                    fileData = filemanager.downloadFile(pathName, bucketName, fileName)
+                    content["message"] = "Success"
+                    content["fileName"] = fileName
+                    content["fileData"] = fileData
+            elif action == "deleteFile":
+                    filemanager.deleteFile(pathName, bucketName, fileName)
+                    content["message"] = "Success"         
             else:
                 content = {"result": f'Error: invalid action "{action}".'}
         except Exception as e:
