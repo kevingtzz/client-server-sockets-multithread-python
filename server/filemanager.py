@@ -81,3 +81,73 @@ def deleteBucket(pathName, bucketName):
         raise Exception("Bucket doesn't exists")
     p.rmdir()
     return
+
+def uploadFile(pathName, bucketName, fileName, binaryData):
+    try:
+        validateDir(pathName)
+        validateDir(bucketName)
+        validateDir(fileName)
+    except Exception as e:
+        raise e
+    completePath = fileData + "/" + pathName
+    p = pathlib.Path(completePath)
+    if not p.exists():
+        raise Exception("Path doesn't exists")
+    completePath += "/" + bucketName
+    p = pathlib.Path(completePath)
+    if not p.exists():
+        raise Exception("Bucket doesn't exists")
+    completePath += "/" + fileName
+    try:
+        binaryData.decode()
+    except (UnicodeDecodeError, AttributeError):
+        raise Exception("Data must be binary")
+    file = open(completePath, "wb")
+    try:
+        file.write(binaryData)
+    except Exception as e:
+        raise e
+    file. close()
+    return
+
+def fileExists(pathName, bucketName, fileName):
+    try:
+        validateDir(pathName)
+        validateDir(bucketName)
+        validateDir(fileName)
+    except Exception as e:
+        raise e
+    completePath = fileData + "/" + pathName
+    p = pathlib.Path(completePath)
+    if not p.exists():
+        raise Exception("Path doesn't exists")
+    completePath += "/" + bucketName
+    p = pathlib.Path(completePath)
+    if not p.exists():
+        raise Exception("Bucket doesn't exists")
+    completePath += "/" + fileName
+    p = pathlib.Path(completePath)
+    return p.is_file()
+
+def listFiles(pathName, bucketName):
+    try:
+        validateDir(pathName)
+    except Exception as e:
+        raise e
+    completePath = fileData + "/" + pathName
+    p = pathlib.Path(completePath)
+    if not p.exists():
+        raise Exception("Path doesn't exists")
+    completePath += "/" + bucketName
+    p = pathlib.Path(completePath)
+    if not p.exists():
+        raise Exception("Bucket doesn't exists")
+    files = []
+    for file in p.iterdir():
+        if file.is_file:
+            fileName = str(file)
+            files.append(fileName[fileName.rfind('/') + 1:])
+    return files
+
+
+

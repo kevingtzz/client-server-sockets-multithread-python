@@ -86,6 +86,8 @@ class Message:
         action = self.request.get("action")
         pathName = self.request.get("pathName")
         bucketName = self.request.get("bucketName")
+        fileName = self.request.get("fileName")
+        fileData = self.request.get("fileData")
         # Decide según la acción, el método a seguir
         try:
             content = { "code": 200 }
@@ -106,8 +108,13 @@ class Message:
             elif action == "deleteBucket":
                     filemanager.deleteBucket(pathName, bucketName)
                     content["message"] = "Bucket " + bucketName + " deleted Succesfully on path " + pathName
-
-                    
+            elif action == "uploadFile":
+                    filemanager.uploadFile(pathName, bucketName, fileName, bytearray(fileData, 'utf8'))
+                    content["message"] = "File " + fileName + " uploaded succesfully to bucket " + bucketName + " on path " + pathName         
+            elif action == "fileExists":
+                    result = filemanager.fileExists(pathName, bucketName, fileName)
+                    content["message"] = "Success"
+                    content["result"] = result           
             else:
                 content = {"result": f'Error: invalid action "{action}".'}
         except Exception as e:
