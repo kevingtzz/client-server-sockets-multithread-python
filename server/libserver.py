@@ -84,25 +84,34 @@ class Message:
 
     def _create_response_json_content(self):
         action = self.request.get("action")
+        pathName = self.request.get("pathName")
+        bucketName = self.request.get("bucketName")
         # Decide según la acción, el método a seguir
-        if action == "getPath":
-            pathName = self.request.get("pathName")
-            print("pathName: " + pathName)
-            try:
-                filemanager.getPath(pathName)
-                content = { "code": 200, "message": "Path " + pathName + " accessed succesfully" }                
-            except Exception as e:
-                content = { "code": 400, "message": str(e)}
-        elif action == "createBucket":
-            pathName = self.request.get("pathName")
-            bucketName = self.request.get("bucketName")
-            try:
-                filemanager.createBucket(pathName, bucketName)
-                content = { "code": 200, "message": "Bucket " + bucketName + " created Succesfully on path " + pathName }                
-            except Exception as e:
-                content = { "code": 400, "message": str(e)}
-        else:
-            content = {"result": f'Error: invalid action "{action}".'}
+        try:
+            content = { "code": 200 }
+            if action == "getPath":
+                    filemanager.getPath(pathName)
+                    content["message"] = "Path " + pathName + " accessed succesfully"
+            elif action == "createBucket":
+                    filemanager.createBucket(pathName, bucketName)
+                    content["message"] = "Bucket " + bucketName + " created Succesfully on path " + pathName
+            elif action == "bucketExists":
+                    result = filemanager.bucketExists(pathName, bucketName)
+                    content["message"] = "Success"
+                    content["result"] = result
+            elif action == "listBuckets":
+                    buckets = filemanager.listBuckets(pathName)
+                    content["message"] = "Success"
+                    content["bucketList"] = str(buckets)
+            elif action == "deleteBucket":
+                    filemanager.deleteBucket(pathName, bucketName)
+                    content["message"] = "Bucket " + bucketName + " deleted Succesfully on path " + pathName
+
+                    
+            else:
+                content = {"result": f'Error: invalid action "{action}".'}
+        except Exception as e:
+            content = { "code": 400, "message": str(e)}
         content_encoding = "utf-8"
         response = {
             "content_bytes": self._json_encode(content, content_encoding),
