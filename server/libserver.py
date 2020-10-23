@@ -87,9 +87,18 @@ class Message:
         # Decide según la acción, el método a seguir
         if action == "getPath":
             pathName = self.request.get("pathName")
+            print("pathName: " + pathName)
             try:
                 filemanager.getPath(pathName)
-                content = { "code": 200, "message": "Success" }                
+                content = { "code": 200, "message": "Path " + pathName + " accessed succesfully" }                
+            except Exception as e:
+                content = { "code": 400, "message": str(e)}
+        elif action == "createBucket":
+            pathName = self.request.get("pathName")
+            bucketName = self.request.get("bucketName")
+            try:
+                filemanager.createBucket(pathName, bucketName)
+                content = { "code": 200, "message": "Bucket " + bucketName + " created Succesfully on path " + pathName }                
             except Exception as e:
                 content = { "code": 400, "message": str(e)}
         else:
