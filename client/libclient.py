@@ -123,6 +123,7 @@ class Message:
 
     def close(self):
         print("closing connection to", self.addr)
+        print('')
         try:
             self.selector.unregister(self.sock)
         except Exception as e:
@@ -196,6 +197,7 @@ class Message:
             encoding = self.jsonheader["content-encoding"]
             self.response = self._json_decode(data, encoding)
             print("received response", repr(self.response), "from", self.addr)
+            print('')
             self._process_response_json_content()
         else:
             # Binary or unknown content-type
